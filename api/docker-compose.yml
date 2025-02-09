@@ -1,0 +1,53 @@
+# docker-compose up --build
+
+services:
+  backend:
+    build: .
+    environment:
+      - ADMIN_ADDRESS=0x63915621df7B675B839aF403BdE9C56fdfBc8555
+      - DATABASE_URL=postgres://myuser:mypassword@db:5432/memoryorgan
+    deploy:
+      replicas: 3 # This instructs Docker to run 3 instances of the backend.
+    networks:
+      - memoryorgan-network
+
+  bootstrap:
+    image: ipfs/go-ipfs:latest
+    container_name: ipfs-bootstrap
+    ports:
+      - "4002:4002"
+      - "5001:5001"
+    command: [ "daemon", "--enable-gc", "--routing=dhtclient" ]
+    networks:
+      - memoryorgan-network
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: memoryorgan
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - memoryorgan-network
+
+  loadbalancer:
+    image: nginx:alpine
+    ports:
+      - "80:80" # Exposes port 80 on the host.
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - memoryorgan-network
+
+volumes:
+  pgdata:
+
+
+networks:
+  memoryorgan-network:
+    driver: bridge
