@@ -44,7 +44,7 @@ Even server owners cannot forge data changes without valid signatures.
 Each service (backend, database, load balancer) runs in a Docker container.
 Simplifies deployment and ensures consistency across environments.
 
-## Architectural Design
+## Architectural Design
 ```
                          ┌────────────────────────┐
                          │       Frontend UI      │
@@ -75,7 +75,7 @@ Simplifies deployment and ensures consistency across environments.
 
 ```
 
-## Core Components
+## Core Components
 
 ### IPFS & OrbitDB
 Stores and replicates data across nodes.
@@ -94,33 +94,33 @@ Checks health endpoints (/health) to identify active nodes.
 Speeds up reads by caching replicated data.
 Reduces overhead on IPFS/OrbitDB for frequent read requests.
 
-### Prometheus & Grafana
+### Prometheus & Grafana
 Offers real-time metrics (via /metrics endpoint) and visualization.
 Monitors CPU, memory, request latencies, and more.
 
-### Backup & Recovery
+### Backup & Recovery
 Provides snapshot endpoints (/backup) to export OrbitDB oplogs.
 Also supports traditional pg_dump for local PostgreSQL backups.
 
-### Roles & Permissions
+### Roles & Permissions
 Admin, Contributor, Viewer.
 Admins can manage roles, update/delete records.
 Contributors can create records, viewers can only read.
 
-### Data Versioning & Audit Logs
+### Data Versioning & Audit Logs
 Each record includes a version field.
 An audit log store tracks every create/update/delete.
 
-## Setup & Installation
+## Setup & Installation
 ### For Docker
 1. Clone the repo.
 2. Run `docker-compose up --build` which sets up the Docker container.
 3. Access the API via the frontend or cURL.
 
-### For non-Docker
+### For non-Docker
 1. Clone the repo.
 2. Run `node index.js` on the root folder of the repo.
 3. Access the API via the frontend or cURL.
 
-## Usage
+## Usage
 Users can access the API via the UI frontend or via cURL commands.
